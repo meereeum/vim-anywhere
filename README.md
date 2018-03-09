@@ -6,8 +6,8 @@ vim-anywhere!
 ![demo](assets/demo.gif)
 
 Once [invoked](#keybinding), vim-anywhere will open a buffer. Close it and its
-contents are copied to your __clipboard__ and your previous application is
-refocused.
+contents are ~~copied to your __clipboard__ and your previous application is
+refocused~~ pasted into your previous application (+ copied to clipboard).
 
 ## Installation
 
@@ -15,7 +15,7 @@ refocused.
 
 __OSX:__
 
-- MacVim (`brew install macvim`)
+- ~~MacVim (`brew install macvim`)~~
 
 __Linux:__
 
@@ -25,19 +25,20 @@ __Linux:__
 #### Install
 
 ```bash
-curl -fsSL https://raw.github.com/cknadler/vim-anywhere/master/install | bash
+git clone https://github.com/meereeum/vim-anywhere
+./vim-anywhere/install
 ```
 
 #### Update
 
 ```bash
-~/.vim-anywhere/update
+./vim-anywhere/update
 ```
 
 #### Uninstall
 
 ```bash
-~/.vim-anywhere/uninstall
+./vim-anywhere/uninstall
 ```
 
 ## Keybinding
