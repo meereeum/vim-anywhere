@@ -25,8 +25,13 @@ __Linux:__
 #### Install
 
 ```bash
-git clone https://github.com/meereeum/vim-anywhere
+git clone https://github.com/meereeum/vim-anywhere.git
 ./vim-anywhere/install
+```
+
+in `.bash_profile`:
+```
+export VISUAL='/your/fave/editor/e.g./spacemacs'
 ```
 
 #### Update
