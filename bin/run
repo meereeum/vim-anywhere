@@ -56,7 +56,17 @@ touch $TMPFILE
 # Linux
 if [[ $OSTYPE == "linux-gnu" ]]; then
   chmod o-r $TMPFILE # Make file only readable by you
-  gvim $VIM_OPTS $TMPFILE
+  text_editor="$(which gvim) $VIM_OPTS"
+
+  # if $VISUAL is specified, use that instead of gvim
+  if [ -e $HOME/.bash_profile ]; then
+      source $HOME/.bash_profile
+      if env | grep -q "VISUAL"; then
+          text_editor="$VISUAL"
+      fi;
+  fi;
+
+  $text_editor $TMPFILE
   cat $TMPFILE | xclip -selection clipboard
 
 # OSX
@@ -67,12 +77,21 @@ elif [[ $OSTYPE == "darwin"* ]]; then
 
   app=$(osascript $AW_PATH/script/current_app.scpt)
   mvim_path=$(cat $AW_PATH/.path)
+  text_editor="$mvim_path $VIM_OPTS"
+
   #require_file_exists $mvim_path \
   #  "mvim must have been move or uninstalled.\nPlease make sure it is" \
   #  "available in your path and then reinstall vim-anywhere."
 
+  # if $VISUAL is specified, use that instead of mvim
+  if [ -e $HOME/.bash_profile ]; then
+    source $HOME/.bash_profile
+    if env | grep -q "VISUAL"; then
+        text_editor="$VISUAL"
+    fi;
+  fi;
 
-  $mvim_path $VIM_OPTS $TMPFILE
+  $text_editor $TMPFILE
   # todo, fix invalid file
 
   # NOTE
