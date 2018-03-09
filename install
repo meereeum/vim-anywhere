@@ -97,7 +97,8 @@ echo "Installing vim-anywhere..."
 # Linux install
 if [[ $OSTYPE == "linux-gnu" ]]; then
   name="vim-anywhere"
-  binding="<CTRL><ALT>v"
+  #binding="<CTRL><ALT>v"
+  binding="<SHIFT><CTRL>j"
   action=$AW_PATH/bin/run
 
   # We always try gconftool first. It is deprecated so it won't be on newer
@@ -137,10 +138,10 @@ elif [[ $OSTYPE == "darwin"* ]]; then
   # Set default keybindings
   defaults write pbs NSServicesStatus '{
     "(null) - VimAnywhere - runWorkflowAsService" = {
-      "key_equivalent" = "@^v";
+      "key_equivalent" = "@^j";
     };
     "org.vim.MacVim - MacVim/New MacVim Buffer With Selection - openSelection" = {
-      "key_equivalent" = "@^v";
+      "key_equivalent" = "@^j";
     };
   }'
 
