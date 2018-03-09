@@ -55,6 +55,8 @@ touch $TMPFILE
 
 # Linux
 if [[ $OSTYPE == "linux-gnu" ]]; then
+  window=$( xdotool getactivewindow )
+
   chmod o-r $TMPFILE # Make file only readable by you
   text_editor="$(which gvim) $VIM_OPTS"
 
@@ -63,11 +65,15 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
       source $HOME/.bash_profile
       if env | grep -q "VISUAL"; then
           text_editor="$VISUAL"
-      fi;
-  fi;
+      fi
+  fi
 
   $text_editor $TMPFILE
   cat $TMPFILE | xclip -selection clipboard
+
+  xdotool windowactivate --sync $window key --clearmodifiers ctrl+v
+  # bash paste
+  xdotool windowactivate --sync $window key --clearmodifiers shift+ctrl+v
 
 # OSX
 elif [[ $OSTYPE == "darwin"* ]]; then
@@ -88,8 +94,8 @@ elif [[ $OSTYPE == "darwin"* ]]; then
     source $HOME/.bash_profile
     if env | grep -q "VISUAL"; then
         text_editor="$VISUAL"
-    fi;
-  fi;
+    fi
+  fi
 
   $text_editor $TMPFILE
   # todo, fix invalid file
