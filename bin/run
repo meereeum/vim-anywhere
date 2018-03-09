@@ -60,11 +60,11 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
   chmod o-r $TMPFILE # Make file only readable by you
   text_editor="$(which gvim) $VIM_OPTS"
 
-  # if $VISUAL is specified, use that instead of gvim
+  # if $EVERYWHERE_EDITOR is specified, use that instead of gvim
   if [ -e $HOME/.bash_profile ]; then
       source $HOME/.bash_profile
-      if env | grep -q "VISUAL"; then
-          text_editor="$VISUAL"
+      if env | grep -q "EVERYWHERE_EDITOR"; then
+          text_editor="$EVERYWHERE_EDITOR"
       fi
   fi
 
@@ -89,11 +89,11 @@ elif [[ $OSTYPE == "darwin"* ]]; then
   #  "mvim must have been move or uninstalled.\nPlease make sure it is" \
   #  "available in your path and then reinstall vim-anywhere."
 
-  # if $VISUAL is specified, use that instead of mvim
+  # if $EVERYWHERE_EDITOR is specified, use that instead of mvim
   if [ -e $HOME/.bash_profile ]; then
     source $HOME/.bash_profile
-    if env | grep -q "VISUAL"; then
-        text_editor="$VISUAL"
+    if env | grep -q "EVERYWHERE_EDITOR"; then
+        text_editor="$EVERYWHERE_EDITOR"
     fi
   fi
 
