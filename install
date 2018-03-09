@@ -45,8 +45,9 @@ require_one_installed() {
   exit 1
 }
 
-AW_PATH=$HOME/.vim-anywhere
-AW_URL='https://github.com/cknadler/vim-anywhere'
+#AW_PATH=$HOME/.vim-anywhere
+AW_PATH=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+#AW_URL=$( git remote get-url origin )
 
 ###
 # pre-installation checks
@@ -54,19 +55,19 @@ AW_URL='https://github.com/cknadler/vim-anywhere'
 
 # Check if vim-anywhere is already installed. If so, remove the previous
 # installation.
-if [ -a $AW_PATH ]; then
-  echo 'Cleaning up previous installation...'
-  rm -rf $AW_PATH
+#if [ -a $AW_PATH ]; then
+  #echo 'Cleaning up previous installation...'
+  #rm -rf $AW_PATH
   # TODO: It would be nice to have an option for user input here
   # Reinstall vim-anywhere (y/n)? ... or something like that
-fi
+#fi
 
 require_installed git
 
 # if we are in a git repo, unset env vars
-if git rev-parse --git-dir &> /dev/null; then
-  unset $(git rev-parse --local-env-vars) &> /dev/null
-fi
+#if git rev-parse --git-dir &> /dev/null; then
+  #unset $(git rev-parse --local-env-vars) &> /dev/null
+#fi
 
 # Linux specific checks
 if [[ $OSTYPE == "linux-gnu" ]]; then
@@ -76,7 +77,8 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
 
 # OSX specific checks
 elif [[ $OSTYPE == "darwin"* ]]; then
-  require_installed mvim 'Run `brew install macvim`.'
+  #require_installed mvim 'Run `brew install macvim`.'
+  echo "no longer required mwahaha"
 
 # Unsupported OS
 else
@@ -90,7 +92,7 @@ fi
 
 echo "Installing vim-anywhere..."
 
-git clone $AW_URL $AW_PATH
+#git clone $AW_URL $AW_PATH
 
 # Linux install
 if [[ $OSTYPE == "linux-gnu" ]]; then
@@ -122,11 +124,15 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
 # OSX install
 elif [[ $OSTYPE == "darwin"* ]]; then
   # store the absolute path to the mvim executable
-  which mvim > $AW_PATH/.path
+  #which mvim > $AW_PATH/.path
 
   # install the workflow as a service
   mkdir -p $HOME/Library/Services
+  rm -r $HOME/Library/Services/VimAnywhere.workflow
   cp -R $AW_PATH/VimAnywhere.workflow $HOME/Library/Services
+
+  # update workflow for working dir
+  sed -i'.tmp' "s@>.HOME[^<]*<@>$AW_PATH/bin/run<@" $HOME/Library/Services/VimAnywhere.workflow/Contents/document.wflow
 
   # Set default keybindings
   defaults write pbs NSServicesStatus '{

@@ -34,8 +34,8 @@ done
 ###
 # run
 ###
-
-AW_PATH=$HOME/.vim-anywhere
+#AW_PATH=$HOME/.vim-anywhere
+AW_PATH=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 TMPFILE_DIR=/tmp/vim-anywhere
 TMPFILE=$TMPFILE_DIR/doc-$(date +"%y%m%d%H%M%S")
 VIM_OPTS=--nofork
