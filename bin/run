@@ -34,7 +34,6 @@ done
 ###
 # run
 ###
-#AW_PATH=$HOME/.vim-anywhere
 AW_PATH=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 TMPFILE_DIR=/tmp/vim-anywhere
 TMPFILE=$TMPFILE_DIR/doc-$(date +"%y%m%d%H%M%S")
@@ -55,8 +54,8 @@ touch $TMPFILE
 
 # Linux
 if [[ $OSTYPE == "linux-gnu" ]]; then
-  window=$( xdotool getactivewindow )
 
+  window=$( xdotool getactivewindow )
   chmod o-r $TMPFILE # Make file only readable by you
   text_editor="$(which gvim) $VIM_OPTS"
 
@@ -77,17 +76,10 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
 
 # OSX
 elif [[ $OSTYPE == "darwin"* ]]; then
-  # if there is no path file, it must have been deleted or the installer failed
-  #require_file_exists $AW_PATH/.path \
-  #  "Please reinstall vim-anywhere."
 
-  app=$(osascript $AW_PATH/script/current_app.scpt)
-  mvim_path=$(cat $AW_PATH/.path)
+  app=$( osascript $AW_PATH/script/current_app.scpt )
+  mvim_path=$( cat $AW_PATH/.path )
   text_editor="$mvim_path $VIM_OPTS"
-
-  #require_file_exists $mvim_path \
-  #  "mvim must have been move or uninstalled.\nPlease make sure it is" \
-  #  "available in your path and then reinstall vim-anywhere."
 
   # if $EVERYWHERE_EDITOR is specified, use that instead of mvim
   if [ -e $HOME/.bash_profile ]; then
@@ -98,7 +90,6 @@ elif [[ $OSTYPE == "darwin"* ]]; then
   fi
 
   $text_editor $TMPFILE
-  # todo, fix invalid file
 
   # NOTE
   # Here we set LANG explicitly to be UTF-8 compatible when copying text. The only way that was explicitly
@@ -107,4 +98,5 @@ elif [[ $OSTYPE == "darwin"* ]]; then
   LANG=en_US.UTF-8 pbcopy < $TMPFILE
   osascript -e "activate application \"$app\""
   osascript -e 'tell application "System Events" to keystroke "v" using command down'
+
 fi
