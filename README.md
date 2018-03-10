@@ -31,7 +31,7 @@ git clone https://github.com/meereeum/vim-anywhere.git
 
 in `.bash_profile`:
 ```
-export VISUAL='/your/fave/editor/e.g./spacemacs'
+export EDITOR_EVERYWHERE='/your/fave/editor/e.g./spacemacs'
 ```
 
 #### Update
