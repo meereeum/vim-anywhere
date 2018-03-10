@@ -67,6 +67,10 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
       fi
   fi
 
+  # copy active txt
+  xdotool windowactivate --sync $window key --clearmodifiers ctrl+a
+  xdotool windowactivate --sync $window key --clearmodifiers ctrl+c
+
   $text_editor $TMPFILE
   cat $TMPFILE | xclip -selection clipboard
 
@@ -88,6 +92,10 @@ elif [[ $OSTYPE == "darwin"* ]]; then
         text_editor="$EVERYWHERE_EDITOR"
     fi
   fi
+
+  # copy active txt
+  osascript -e 'tell application "System Events" to keystroke "a" using command down'
+  osascript -e 'tell application "System Events" to keystroke "c" using command down'
 
   $text_editor $TMPFILE
 
