@@ -20,7 +20,8 @@ __OSX:__
 __Linux:__
 
 - Gnome (or a derivative)
-- gVim
+- ~~gVim~~
+- xclip, xdotool
 
 #### Install
 

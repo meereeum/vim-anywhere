@@ -72,8 +72,9 @@ require_installed git
 # Linux specific checks
 if [[ $OSTYPE == "linux-gnu" ]]; then
   require_one_installed gconftool gsettings
-  require_installed gvim
+  #require_installed gvim
   require_installed xclip
+  require_installed xdotools
 
 # OSX specific checks
 elif [[ $OSTYPE == "darwin"* ]]; then
@@ -124,8 +125,6 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
 
 # OSX install
 elif [[ $OSTYPE == "darwin"* ]]; then
-  # store the absolute path to the mvim executable
-  #which mvim > $AW_PATH/.path
 
   # install the workflow as a service
   mkdir -p $HOME/Library/Services
