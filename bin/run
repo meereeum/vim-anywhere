@@ -34,9 +34,18 @@ done
 ###
 # run
 ###
+
 AW_PATH=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 TMPFILE_DIR=/tmp/vim-anywhere
 TMPFILE=$TMPFILE_DIR/doc-$(date +"%y%m%d%H%M%S")
+
+[[ $OSTYPE == "linux-gnu" ]] && is_linux=1 || is_linux=0
+
+# fallback editor
+
+# {g,m}vim
+(( $is_linux )) && fallback="$( which gvim )" || fallback="$( cat $AW_PATH/.path )"
+
 VIM_OPTS=--nofork
 
 # Use ~/.gvimrc.min or ~/.vimrc.min if one exists
@@ -49,8 +58,21 @@ for vimrc_path in "${VIMRC_PATH[@]}"; do
     fi
 done
 
+text_editor="$fallback $VIM_OPTS"
+
+# if $EVERYWHERE_EDITOR is specified, use that instead
+if [ -e $HOME/.bash_profile ]; then
+  source $HOME/.bash_profile
+  if env | grep -q "EVERYWHERE_EDITOR"; then
+      text_editor="$EVERYWHERE_EDITOR"
+  fi
+fi
+
+
 mkdir -p $TMPFILE_DIR
 touch $TMPFILE
+chmod o-r $TMPFILE # Make file only readable by you
+
 
 # Linux
 if [[ $OSTYPE == "linux-gnu" ]]; then
@@ -63,53 +85,37 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
   # brittle - name only
   # [[ $( xdotool getwindowname $window ) == Terminal ]] && is_bash=1 || is_bash=0
 
-  chmod o-r $TMPFILE # Make file only readable by you
-  text_editor="$(which gvim) $VIM_OPTS"
-
-  # if $EVERYWHERE_EDITOR is specified, use that instead of gvim
-  if [ -e $HOME/.bash_profile ]; then
-      source $HOME/.bash_profile
-      if env | grep -q "EVERYWHERE_EDITOR"; then
-          text_editor="$EVERYWHERE_EDITOR"
-      fi
-  fi
-
   # copy active txt
   if (( ! $is_bash )); then
     xdotool windowactivate --sync $window key --clearmodifiers ctrl+a
-    xdotool windowactivate --sync $window key ctrl+c
+    xdotool key ctrl+c
   fi
   # TODO how to copy cmd line ?
 
   $text_editor $TMPFILE
+
   # xclip destroys newlines
-  #cat $TMPFILE | xclip -selection clipboard
+  # cat $TMPFILE | xclip -selection clipboard
   cat $TMPFILE | xsel -i --clipboard
 
   # clobberpaste
+  xdotool windowactivate --sync $window 
+
   if (( $is_bash )); then
     # bash paste
     paste="--clearmodifiers shift+ctrl+v"
   else
-    xdotool windowactivate --sync $window key --clearmodifiers ctrl+a
+    xdotool key --clearmodifiers ctrl+a
     paste="ctrl+v"
   fi
-  xdotool windowactivate --sync $window key $paste
+
+  xdotool key $paste
+
 
 # OSX
 elif [[ $OSTYPE == "darwin"* ]]; then
 
   app=$( osascript $AW_PATH/script/current_app.scpt )
-  mvim_path=$( cat $AW_PATH/.path )
-  text_editor="$mvim_path $VIM_OPTS"
-
-  # if $EVERYWHERE_EDITOR is specified, use that instead of mvim
-  if [ -e $HOME/.bash_profile ]; then
-    source $HOME/.bash_profile
-    if env | grep -q "EVERYWHERE_EDITOR"; then
-        text_editor="$EVERYWHERE_EDITOR"
-    fi
-  fi
 
   # copy active txt
   osascript -e "activate application \"$app\""
@@ -123,7 +129,16 @@ elif [[ $OSTYPE == "darwin"* ]]; then
   # setting this to en_US.UTF-8. This may eventually cause issues with other languages. If so, just remove
   # the LANG setting.
   LANG=en_US.UTF-8 pbcopy < $TMPFILE
+
+  # clobberpaste
   osascript -e "activate application \"$app\""
+  osascript -e 'tell application "System Events" to keystroke "a" using command down'
   osascript -e 'tell application "System Events" to keystroke "v" using command down'
+
+
+else
+
+    err "OS not supported.."
+    exit 1
 
 fi
