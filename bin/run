@@ -82,7 +82,9 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
   # TODO how to copy cmd line ?
 
   $text_editor $TMPFILE
-  cat $TMPFILE | xclip -selection clipboard
+  # xclip destroys newlines
+  #cat $TMPFILE | xclip -selection clipboard
+  cat $TMPFILE | xsel -i --clipboard
 
   # clobberpaste
   if (( $is_bash )); then

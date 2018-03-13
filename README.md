@@ -21,7 +21,7 @@ __Linux:__
 
 - Gnome (or a derivative)
 - ~~gVim~~
-- xclip, xdotool
+- xdotool, xsel
 
 #### Install
 
