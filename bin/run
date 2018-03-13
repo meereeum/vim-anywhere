@@ -56,6 +56,13 @@ touch $TMPFILE
 if [[ $OSTYPE == "linux-gnu" ]]; then
 
   window=$( xdotool getactivewindow )
+  pid=$( xdotool getwindowpid $window )
+
+  [[ $( ps aux | awk '$2=='$pid'{print $11}' | grep -c terminal ) == 1 ]] && is_bash=1 || is_bash=0
+
+  # brittle - name only
+  #[[ $( xdotool getwindowname $window ) == Terminal ]] && is_bash=1 || is_bash=0
+
   chmod o-r $TMPFILE # Make file only readable by you
   text_editor="$(which gvim) $VIM_OPTS"
 
@@ -68,15 +75,24 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
   fi
 
   # copy active txt
-  xdotool windowactivate --sync $window key ctrl+a
-  xdotool windowactivate --sync $window key ctrl+c
+  if (( ! $is_bash )); then
+    xdotool windowactivate --sync $window key ctrl+a
+    xdotool windowactivate --sync $window key ctrl+c
+  fi
+  # TODO how to copy cmd line ?
 
   $text_editor $TMPFILE
   cat $TMPFILE | xclip -selection clipboard
 
-  xdotool windowactivate --sync $window key ctrl+v
-  # bash paste
-  xdotool windowactivate --sync $window key --clearmodifiers shift+ctrl+v
+  # clobberpaste
+  if (( $is_bash )); then
+    # bash paste
+    paste='--clearmodifiers shift+ctrl+v'
+  else
+    xdotool windowactivate --sync $window --clearmodifiers key ctrl+a
+    paste='ctrl+v'
+  fi
+  xdotool windowactivate --sync $window key $paste
 
 # OSX
 elif [[ $OSTYPE == "darwin"* ]]; then
