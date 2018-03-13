@@ -61,7 +61,7 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
   [[ $( ps aux | awk '$2=='$pid'{print $11}' | grep -c terminal ) == 1 ]] && is_bash=1 || is_bash=0
 
   # brittle - name only
-  #[[ $( xdotool getwindowname $window ) == Terminal ]] && is_bash=1 || is_bash=0
+  # [[ $( xdotool getwindowname $window ) == Terminal ]] && is_bash=1 || is_bash=0
 
   chmod o-r $TMPFILE # Make file only readable by you
   text_editor="$(which gvim) $VIM_OPTS"
@@ -76,7 +76,7 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
 
   # copy active txt
   if (( ! $is_bash )); then
-    xdotool windowactivate --sync $window key ctrl+a
+    xdotool windowactivate --sync $window key --clearmodifiers ctrl+a
     xdotool windowactivate --sync $window key ctrl+c
   fi
   # TODO how to copy cmd line ?
@@ -87,10 +87,10 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
   # clobberpaste
   if (( $is_bash )); then
     # bash paste
-    paste='--clearmodifiers shift+ctrl+v'
+    paste="--clearmodifiers shift+ctrl+v"
   else
-    xdotool windowactivate --sync $window --clearmodifiers key ctrl+a
-    paste='ctrl+v'
+    xdotool windowactivate --sync $window key --clearmodifiers ctrl+a
+    paste="ctrl+v"
   fi
   xdotool windowactivate --sync $window key $paste
 
