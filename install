@@ -62,18 +62,12 @@ AW_PATH=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
   # Reinstall vim-anywhere (y/n)? ... or something like that
 #fi
 
-require_installed git
-
-# if we are in a git repo, unset env vars
-#if git rev-parse --git-dir &> /dev/null; then
-  #unset $(git rev-parse --local-env-vars) &> /dev/null
-#fi
+#require_installed git
 
 # Linux specific checks
 if [[ $OSTYPE == "linux-gnu" ]]; then
   require_one_installed gconftool gsettings
-  #require_installed gvim
-  require_installed xclip
+  require_installed xsel #xclip
   require_installed xdotools
 
 # OSX specific checks
@@ -93,12 +87,9 @@ fi
 
 echo "Installing vim-anywhere..."
 
-#git clone $AW_URL $AW_PATH
-
 # Linux install
 if [[ $OSTYPE == "linux-gnu" ]]; then
   name="vim-anywhere"
-  #binding="<CTRL><ALT>v"
   binding="<SHIFT><CTRL>j"
   action=$AW_PATH/bin/run
 
@@ -132,7 +123,7 @@ elif [[ $OSTYPE == "darwin"* ]]; then
   cp -R $AW_PATH/VimAnywhere.workflow $HOME/Library/Services
 
   # update workflow for working dir
-  sed -i'.tmp' "s@>.HOME[^<]*<@>$AW_PATH/bin/run<@" $HOME/Library/Services/VimAnywhere.workflow/Contents/document.wflow
+  sed -i'.tmp' "s@>.HOME[^<]*<@>${AW_PATH}/bin/run<@" $HOME/Library/Services/VimAnywhere.workflow/Contents/document.wflow
 
   # Set default keybindings
   defaults write pbs NSServicesStatus '{

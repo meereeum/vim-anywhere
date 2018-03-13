@@ -44,7 +44,7 @@ TMPFILE=$TMPFILE_DIR/doc-$(date +"%y%m%d%H%M%S")
 # fallback editor
 
 # {g,m}vim
-(( $is_linux )) && fallback="$( which gvim )" || fallback="$( cat $AW_PATH/.path )"
+(( $is_linux )) && fallback="$( which gvim )" || fallback="$( which mvim )"
 
 VIM_OPTS=--nofork
 
@@ -75,7 +75,7 @@ chmod o-r $TMPFILE # Make file only readable by you
 
 
 # Linux
-if [[ $OSTYPE == "linux-gnu" ]]; then
+if (( $is_linux )); then
 
   window=$( xdotool getactivewindow )
   pid=$( xdotool getwindowpid $window )
@@ -113,7 +113,8 @@ if [[ $OSTYPE == "linux-gnu" ]]; then
 
 
 # OSX
-elif [[ $OSTYPE == "darwin"* ]]; then
+#elif [[ $OSTYPE == "darwin"* ]]; then
+else
 
   app=$( osascript $AW_PATH/script/current_app.scpt )
 
@@ -134,11 +135,5 @@ elif [[ $OSTYPE == "darwin"* ]]; then
   osascript -e "activate application \"$app\""
   osascript -e 'tell application "System Events" to keystroke "a" using command down'
   osascript -e 'tell application "System Events" to keystroke "v" using command down'
-
-
-else
-
-    err "OS not supported.."
-    exit 1
 
 fi
