@@ -119,7 +119,7 @@ elif [[ $OSTYPE == "darwin"* ]]; then
 
   # install the workflow as a service
   mkdir -p $HOME/Library/Services
-  rm -r $HOME/Library/Services/VimAnywhere.workflow
+  [[ -d $HOME/Library/Services/VimAnywhere.workflow ]] && rm -r $HOME/Library/Services/VimAnywhere.workflow
   cp -R $AW_PATH/VimAnywhere.workflow $HOME/Library/Services
 
   # update workflow for working dir
