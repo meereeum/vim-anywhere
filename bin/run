@@ -116,12 +116,21 @@ if (( $is_linux )); then
 #elif [[ $OSTYPE == "darwin"* ]]; then
 else
 
-  app=$( osascript $AW_PATH/script/current_app.scpt )
+  #app=$( osascript $AW_PATH/script/current_app.scpt )
+  app=$( osascript -e 'tell application "System Events"' \
+                   -e 'set aName to name of first application process whose frontmost is true' \
+                   -e 'end tell' \
+                   -e 'aName' )
+
+  [[ $app == Terminal ]] && is_bash=1 || is_bash=0
 
   # copy active txt
-  osascript -e "activate application \"$app\""
-  osascript -e 'tell application "System Events" to keystroke "a" using command down'
-  osascript -e 'tell application "System Events" to keystroke "c" using command down'
+  if (( ! $is_bash )); then
+    osascript -e "activate application \"$app\""
+    osascript -e 'tell application "System Events" to keystroke "a" using command down'
+    osascript -e 'tell application "System Events" to keystroke "c" using command down'
+  fi
+  # TODO how to copy cmd line ?
 
   $text_editor $TMPFILE
 
